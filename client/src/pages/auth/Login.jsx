@@ -100,7 +100,7 @@ const Login = ({ onLoginSuccess }) => {
                     <div className="space-y-8 pl-2">
                         <div className="flex gap-5 group">
                             <div className="relative">
-                                <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300">
+                                <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-900 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300">
                                     <Zap size={20} fill="currentColor" className="text-blue-600/20" />
                                     <Zap size={20} className="absolute" />
                                 </div>
@@ -165,7 +165,7 @@ const Login = ({ onLoginSuccess }) => {
                                         onClick={() => toggleBusinessType(opt.id)} 
                                         className={`px-4 py-2.5 rounded-full text-xs font-bold transition-all border
                                             ${isActive 
-                                                ? 'bg-blue-600 border-blue-600 text-white shadow-md shadow-blue-200' 
+                                                ? 'bg-blue-900 border-blue-900 text-white shadow-md shadow-blue-200' 
                                                 : 'bg-white border-gray-200 text-gray-600'
                                             }`
                                         }
@@ -186,7 +186,7 @@ const Login = ({ onLoginSuccess }) => {
                                     value={formData.shopName} 
                                     onChange={e => setFormData({...formData, shopName: e.target.value})} 
                                 />
-                                <label htmlFor="shopName" className="absolute left-4 top-1 text-[10px] font-bold text-gray-400 uppercase transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-blue-500">Shop Name</label>
+                                <label htmlFor="shopName" className="absolute left-4 top-1 text-[10px] font-bold text-gray-400 uppercase transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-blue-900">Shop Name</label>
                             </div>
 
                             <div className="relative">
@@ -197,7 +197,7 @@ const Login = ({ onLoginSuccess }) => {
                                     value={formData.address} 
                                     onChange={e => setFormData({...formData, address: e.target.value})} 
                                 />
-                                <label htmlFor="address" className="absolute left-4 top-1 text-[10px] font-bold text-gray-400 uppercase transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-blue-500">Address</label>
+                                <label htmlFor="address" className="absolute left-4 top-1 text-[10px] font-bold text-gray-400 uppercase transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-blue-900">Address</label>
                             </div>
 
                             <div className="flex gap-3">
@@ -210,7 +210,7 @@ const Login = ({ onLoginSuccess }) => {
                                         value={formData.number} 
                                         onChange={e => setFormData({...formData, number: e.target.value})} 
                                     />
-                                    <label htmlFor="mobile" className="absolute left-4 top-1 text-[10px] font-bold text-gray-400 uppercase transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-blue-500">Mobile</label>
+                                    <label htmlFor="mobile" className="absolute left-4 top-1 text-[10px] font-bold text-gray-400 uppercase transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-blue-900">Mobile</label>
                                 </div>
                                 <div className="relative w-28">
                                     <input 
@@ -222,14 +222,14 @@ const Login = ({ onLoginSuccess }) => {
                                         value={formData.pin} 
                                         onChange={e => setFormData({...formData, pin: e.target.value})} 
                                     />
-                                    <label htmlFor="pin" className="absolute left-0 right-0 text-center top-1 text-[10px] font-bold text-gray-400 uppercase transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-blue-500">PIN</label>
+                                    <label htmlFor="pin" className="absolute left-0 right-0 text-center top-1 text-[10px] font-bold text-gray-400 uppercase transition-all peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400 peer-focus:top-1 peer-focus:text-[10px] peer-focus:text-blue-900">PIN</label>
                                 </div>
                             </div>
                         </div>
 
                         <button 
                             disabled={loading} 
-                            className="mt-auto w-full h-14 bg-blue-600 text-white rounded-2xl font-bold text-lg shadow-lg shadow-blue-600/30 hover:shadow-blue-600/40 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                            className="mt-auto w-full h-14 bg-blue-900 text-white rounded-2xl font-bold text-lg shadow-lg shadow-blue-600/30 hover:shadow-blue-600/40 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
                         >
                             {loading ? <Loader2 className="animate-spin"/> : "Launch Dashboard"}
                         </button>
