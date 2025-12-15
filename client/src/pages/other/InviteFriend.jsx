@@ -1,7 +1,7 @@
 import React from "react";
 import { Share2, Copy, Gift, Users } from "lucide-react";
-import Header from "../../components/layout/Header.jsx";
 import toast from "react-hot-toast";
+import Navbar from "../../components/layout/Navbar.jsx";
 
 const InviteFriend = () => {
   const referralLink = "https://billinghabit.vercel.app"; 
@@ -29,7 +29,7 @@ const InviteFriend = () => {
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      <Header />
+      <Navbar title={"Invite Friends"} />
       <div className="max-w-md mx-auto px-6 py-10 text-center">
         {/* Visual Icon */}
         <div className="w-24 h-24 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner relative">

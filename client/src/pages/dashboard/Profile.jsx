@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAppContext } from '../../context/AppContext.jsx';
 import toast from 'react-hot-toast';
-import { User, Store, MapPin, Phone, Mail, Lock, Save, ArrowLeft, Edit2, ShieldCheck, ChevronRight } from 'lucide-react';
-import LoadingSpinner from '../../components/common/LoadingSpinner.jsx';
-
+import { User, Store, MapPin, Phone, Mail, Lock, Save, ArrowLeft, Edit2, ShieldCheck, ChevronRight, Loader2 } from 'lucide-react'; // Added Loader2 manually
 
 
 const Profile = () => {
@@ -120,12 +118,18 @@ const Profile = () => {
                     </div>
                 </div>
 
-                {/* Fixed Bottom Save/Cancel Bar */}
+                {/* Fixed Bottom Save/Cancel Bar - MODIFIED HERE */}
                 {isEditing && (
                     <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-100 flex gap-3 z-20 shadow-[0_-8px_30px_rgba(0,0,0,0.1)]">
                         <button type="button" onClick={() => { setIsEditing(false); setFormData(prev => ({...prev, pin: ''})); }} className="flex-1 py-3.5 bg-gray-100 text-gray-700 rounded-xl font-bold text-base hover:bg-gray-200 transition-colors shadow-sm">Cancel</button>
-                        <button type="submit" disabled={loading} className={`flex-2 py-3.5 ${primaryAccentBg} text-white rounded-xl font-bold text-base flex justify-center items-center gap-2 shadow-lg shadow-slate-900/30 hover:bg-slate-800`}>
-                            {loading ? <LoadingSpinner className="animate-spin" size={20}/> : <><Save size={18}/> Save Changes</>}
+                        
+                        {/* Primary Button FIX: Use a fixed width container for the icon/spinner */}
+                        <button type="submit" disabled={loading} className={`flex-2 py-3.5 ${primaryAccentBg} text-white rounded-xl font-bold text-base flex justify-center items-center gap-2 shadow-lg shadow-slate-900/30 hover:bg-slate-800 transition-colors active:scale-[0.98]`}>
+                            {/* Fixed Container for Icon/Spinner */}
+                            <span className="w-5 h-5 flex items-center justify-center">
+                                {loading ? <Loader2 className="animate-spin" size={20}/> : <Save size={18}/>}
+                            </span>
+                            Save Changes
                         </button>
                     </div>
                 )}
