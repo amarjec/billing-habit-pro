@@ -17,6 +17,8 @@ import History from "./pages/dashboard/History.jsx";
 import Profile from "./pages/dashboard/Profile.jsx";
 import Subscription from "./pages/dashboard/Subscription.jsx";
 import LandingPage from "./pages/LandingPage.jsx";
+import InviteFriend from "./pages/other/InviteFriend.jsx";
+import ContactUs from "./pages/other/ContactUs.jsx";
 
 /* ------------------- PWA Detection ------------------- */
 const isPWA = () =>
@@ -87,6 +89,10 @@ const App = () => {
         <Route path="/products/:subCategoryId" element={<PremiumRoute element={<Product />} />} />
         <Route path="/view-quote" element={<PremiumRoute element={<FinalQuotation />} />} />
         <Route path="/pro" element={<ProtectedRoute element={<Subscription />} />} />
+
+        {/* Other */}
+        <Route path="/invite" element={<ProtectedRoute element={<InviteFriend />} />} />
+        <Route path="/contact" element={<ProtectedRoute element={<ContactUs />} />} />
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
