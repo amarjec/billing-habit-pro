@@ -119,7 +119,7 @@ const LandingPage = () => {
                                     <Zap size={20} fill="currentColor" className="text-blue-600/20" />
                                     <Zap size={20} className="absolute" />
                                 </div>
-                                <div className="absolute top-10 left-1/2 w-0.5 h-full bg-gray-50 -ml-px"></div>
+                                <div className="absolute top-10 left-1/2 w-0.5 h-full bg-gray-100 -ml-px"></div>
                             </div>
                             <div>
                                 <h3 className="font-bold text-gray-900 text-lg">Instant Invoicing</h3>
@@ -185,13 +185,12 @@ const LandingPage = () => {
                         App installed successfully. <br/>
                         <span className="text-slate-900 font-bold block mt-2">Close this browser and open the app from your home screen.</span>
                     </p>
-
-                    {/* Attempt to open App via Deep Link (Works on some Androids) */}
-                    <a href="/home" className="mt-8 w-full">
-                        <button className="w-full h-16 bg-blue-900 text-white rounded-2xl font-bold text-lg shadow-xl shadow-blue-600/30 active:scale-[0.98] transition-all">
-                            Open App
-                        </button>
-                    </a>
+                    <button 
+                        onClick={() => navigate('/login')} 
+                        className="mt-8 w-full h-16 bg-blue-900 text-white rounded-2xl font-bold text-lg shadow-xl shadow-blue-600/30 active:scale-[0.98] transition-all"
+                    >
+                        Continue to Login
+                    </button>
                 </div>
             )}
         </div>
