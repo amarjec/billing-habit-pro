@@ -16,7 +16,7 @@ export default defineConfig({
       short_name: 'Billing Habit',
       start_url: "/",
       description: 'Quotation & Profit Automation ',
-      theme_color: '#1e40af',
+      theme_color: '#133490',
       background_color: '#ffffff',
       display: 'standalone',
 
