@@ -69,6 +69,7 @@ const Login = ({ onLoginSuccess }) => {
     e.preventDefault();
     if(!formData.shopName || !formData.address || !formData.number || !formData.pin) return toast.error("Please fill all fields");
     if(formData.businessTypes.length === 0) return toast.error("Select business type");
+    if(formData.number.length !== 10) return toast.error("Mobile number must be 10 digits");
     if(formData.pin.length !== 4) return toast.error("PIN must be 4 digits");
 
     setLoading(true);
