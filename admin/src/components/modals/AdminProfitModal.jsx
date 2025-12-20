@@ -33,9 +33,16 @@ const AdminProfitModal = ({ isOpen, onClose, quoteId }) => {
                                 </div>
                             ))}
                         </div>
+                        <div>
+                            <hr className="border-slate-100 my-2"/>
+                        </div>
+                        <div className="flex justify-between text-sm px-2">
+                            <span className="font-bold text-red-500">Discount</span>
+                            <span className="font-black text-red-500">- ₹{data.quote.discount}</span>
+                        </div>
                         <div className="bg-slate-900 text-white p-6 rounded-3xl flex justify-between items-center shadow-xl shadow-slate-900/20">
                             <span className="text-slate-400 font-bold uppercase text-xs tracking-wider">Total Profit</span>
-                            <span className="text-3xl font-black">₹{data.profitDetails.reduce((a,b)=>a+b.profit,0)}</span>
+                            <span className="text-3xl font-black">₹{data.profitDetails.reduce((a,b)=>a+b.profit,0)- data.quote.discount}</span>
                         </div>
                     </div>
                 )}

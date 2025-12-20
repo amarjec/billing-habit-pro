@@ -260,20 +260,20 @@ export const adminManageSubCategory = async (req, res) => {
     }
 };
 
-// Analytics: Get Sales/Profit/Quotes (Classified by Status)
+// Analytics: Get Sales/Profit/Quotes (Classified by Status AND Type)
 export const getUserAnalytics = async (req, res) => {
     try {
         const { targetUserId } = req.params;
         const now = new Date();
         
-        // Fetch ALL quotes (we filter inside the loop)
+        // Fetch all quotes and products
         const quotes = await quoteModel.find({ user: targetUserId });
-        
-        // Fetch products for profit calculation
         const products = await productModel.find({ user: targetUserId });
+        
+        // Create a map for quick product cost lookup
         const productMap = new Map(products.map(p => [p._id.toString(), p.costPrice]));
 
-        // Helper: Calculate Profit
+        // Helper to calculate profit per quote
         const calculateQuoteProfit = (quote) => {
             let cost = 0;
             quote.items.forEach(item => {
@@ -284,28 +284,40 @@ export const getUserAnalytics = async (req, res) => {
             return (sellingTotal - cost) + (quote.extraFare || 0) - (quote.discount || 0);
         };
 
-        // Initialize Stats Structure
         const stats = {
-            // REALIZED (Delivered Only)
-            today: { sales: 0, profit: 0, count: 0 },
-            month: { sales: 0, profit: 0, count: 0 },
-            year:  { sales: 0, profit: 0, count: 0 },
+            // GLOBAL TOTALS (Delivered Only)
+            allTime: { sales: 0, profit: 0, count: 0 }, // <--- ADDED THIS
+            today:   { sales: 0, profit: 0, count: 0 },
+            month:   { sales: 0, profit: 0, count: 0 },
+            year:    { sales: 0, profit: 0, count: 0 },
             
+            // TYPE BREAKDOWN (All Time - Delivered Only)
+            retail:    { sales: 0, profit: 0, count: 0 },
+            wholesale: { sales: 0, profit: 0, count: 0 },
+
             // PIPELINE (Status Totals)
-            pending: { amount: 0, count: 0 },
+            pending:   { amount: 0, count: 0 },
             cancelled: { amount: 0, count: 0 }
         };
 
         quotes.forEach(q => {
             const qDate = new Date(q.createdAt);
+            
+            // Check dates
             const isToday = qDate.toDateString() === now.toDateString();
             const isMonth = qDate.getMonth() === now.getMonth() && qDate.getFullYear() === now.getFullYear();
-            const isYear = qDate.getFullYear() === now.getFullYear();
+            const isYear  = qDate.getFullYear() === now.getFullYear();
 
-            // --- 1. HANDLE DELIVERED (Realized Revenue & Profit) ---
+            // --- 1. HANDLE DELIVERED (Realized Revenue) ---
             if (q.status === 'Delivered') {
                 const profit = calculateQuoteProfit(q);
 
+                // A. Update All Time Stats (No date check needed)
+                stats.allTime.sales += q.totalAmount;  // <--- ADDED
+                stats.allTime.profit += profit;        // <--- ADDED
+                stats.allTime.count += 1;              // <--- ADDED
+
+                // B. Time-based Aggregation
                 if (isToday) {
                     stats.today.sales += q.totalAmount;
                     stats.today.profit += profit;
@@ -321,15 +333,24 @@ export const getUserAnalytics = async (req, res) => {
                     stats.year.profit += profit;
                     stats.year.count += 1;
                 }
-            }
 
-            // --- 2. HANDLE PENDING (Potential Revenue) ---
+                // C. Type-based Aggregation (This acts as All-Time breakdown)
+                if (q.quoteType === 'Wholesale') {
+                    stats.wholesale.sales += q.totalAmount;
+                    stats.wholesale.profit += profit;
+                    stats.wholesale.count += 1;
+                } else {
+                    // Default to Retail
+                    stats.retail.sales += q.totalAmount;
+                    stats.retail.profit += profit;
+                    stats.retail.count += 1;
+                }
+            }
+            // --- 2. PIPELINE ---
             else if (q.status === 'Pending') {
                 stats.pending.amount += q.totalAmount;
                 stats.pending.count += 1;
             }
-
-            // --- 3. HANDLE CANCELLED (Lost Revenue) ---
             else if (q.status === 'Cancelled') {
                 stats.cancelled.amount += q.totalAmount;
                 stats.cancelled.count += 1;
@@ -339,6 +360,7 @@ export const getUserAnalytics = async (req, res) => {
         res.json({ success: true, stats });
 
     } catch (error) { 
+        console.error(error);
         res.json({ success: false, message: error.message }); 
     }
 };

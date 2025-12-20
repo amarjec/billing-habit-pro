@@ -23,6 +23,7 @@ const AdminQuoteList = ({ quotes }) => {
                                 <div className="flex items-center gap-2 text-xs text-slate-400 font-medium">
                                     <Calendar size={12}/> {new Date(q.createdAt).toLocaleDateString()}
                                     <span className="bg-slate-100 px-2 py-0.5 rounded-full text-slate-600">{q.status}</span>
+                                    <span className="bg-amber-200 px-2 py-0.5 rounded-full text-slate-600">{q.quoteType}</span>
                                 </div>
                             </div>
                         </div>

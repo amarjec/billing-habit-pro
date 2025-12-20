@@ -8,8 +8,8 @@ const AdminCustomerList = ({ customers }) => (
                 <div className="bg-blue-50 p-3 rounded-full text-blue-600 shrink-0"><User size={20}/></div>
                 <div>
                     <p className="font-bold text-lg text-slate-900">{c.name}</p>
-                    <p className="flex items-center gap-2 text-sm text-slate-500 mt-1"><Phone size={14}/> {c.number}</p>
-                    <p className="flex items-center gap-2 text-sm text-slate-500"><MapPin size={14}/> {c.address}</p>
+                    {c.number && <p className="flex items-center gap-2 text-sm text-slate-500"><Phone size={14}/> +91 {c.number}</p>}
+                    {c.address && <p className="flex items-start gap-2 text-sm text-slate-500"><MapPin size={14} className="mt-0.5"/> {c.address}</p>}
                 </div>
             </div>
         ))}
