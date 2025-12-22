@@ -30,17 +30,6 @@ export default defineConfig({
           client_mode: ["focus-existing", "auto"]
         },
 
-        // Share Target: Allows your app to receive text/links shared from other apps
-        share_target: {
-          action: "/customer",
-          method: "GET",
-          params: {
-            title: "title",
-            text: "text",
-            url: "url"
-          }
-        },
-
         // --- ASSETS ---
         screenshots: [
           {
