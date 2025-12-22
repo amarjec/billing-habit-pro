@@ -14,6 +14,7 @@ export default defineConfig({
       manifest: {
         name: "Billing Habit",
         short_name: "Billing Habit",
+        categories: ["business", "productivity", "utilities"],
         id: "/?source=pwa",
         start_url: "/",
         description: "Create professional quotes and track profits in seconds.",
