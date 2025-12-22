@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.vercel.billinghabit.twa",
+      "sha256_cert_fingerprints": [
+        "88:FE:A9:37:30:AF:FD:A4:81:42:F7:72:B1:FC:75:85:7A:3F:C6:E2:61:BD:28:95:7B:09:47:84:B6:E1:72:AF"
+      ]
+    }
+  }
+]
