@@ -72,13 +72,6 @@ export default defineConfig({
             form_factor: "narrow",
             label: "Complete Order & Sales History",
           },
-          {
-            src: "screenshots/subscription.png",
-            sizes: "1080x2400",
-            type: "image/png",
-            form_factor: "narrow",
-            label: "Premium Business Growth Plans",
-          },
         ],
 
         icons: [
