@@ -1,7 +1,8 @@
-import { toPng, toBlob } from 'html-to-image'; // Added toBlob
+import { toPng, toBlob } from 'html-to-image';
 import jsPDF from 'jspdf';
 import toast from 'react-hot-toast';
 
+// --- 1. Standard PDF Download Function ---
 export const generatePDF = async (elementId, fileName) => {
     const element = document.getElementById(elementId);
     if (!element) {
@@ -9,6 +10,7 @@ export const generatePDF = async (elementId, fileName) => {
         return;
     }
 
+    // Use a unique ID for this toast to avoid conflicts
     const toastId = toast.loading("Generating PDF...");
 
     try {
@@ -38,33 +40,63 @@ export const generatePDF = async (elementId, fileName) => {
         pdf.save(`${fileName}.pdf`);
         
         toast.success("PDF Downloaded!", { id: toastId });
+        return true; // Success flag
 
     } catch (error) {
         console.error("PDF Generation Error:", error);
         toast.error("Failed to generate PDF", { id: toastId });
+        return false;
     }
 };
 
-// --- NEW: Mobile Share Function (Optimized for Long Bills) ---
+// --- 2. Smart Share Function (Falls back to PDF) ---
 export const shareInvoice = async (elementId, fileName) => {
     const element = document.getElementById(elementId);
     if (!element) return toast.error("Content not found");
 
     const toastId = toast.loading("Preparing to share...");
 
+    
+    // Helper to trigger fallback
+    const triggerFallback = async (reason) => {
+        toast.loading(`Share failed (${reason}). Downloading PDF instead...`, { id: toastId });
+        await generatePDF(elementId, fileName);
+    };
+
     try {
-        // OPTIMIZATION 1: Use toBlob directly (Saves memory compared to toPng string)
-        // OPTIMIZATION 2: Use JPEG (Smaller file size for long lists)
-        // OPTIMIZATION 3: Cap pixelRatio at 2 (Prevents image dimensions from crashing mobile GPU)
+        // A. Check for Native Share Support
+        if (!navigator.share || !navigator.canShare) {
+            await triggerFallback("Not supported on this device");
+            return;
+        }
+
+        // B. Calculate Smart Scale (to prevent crashing on long bills)
+        const height = element.scrollHeight;
+        const width = element.scrollWidth;
+        const area = width * height;
+        const TARGET_AREA = 4000000; // ~4 Megapixels safe limit for mobile
+        
+        let safePixelRatio = 2; 
+
+        // Reduce quality if bill is massive
+        if (area * 4 > TARGET_AREA) {
+            safePixelRatio = Math.sqrt(TARGET_AREA / area);
+            if (safePixelRatio < 0.6) safePixelRatio = 0.6; // Minimum readable quality
+        }
+
+        // C. Generate JPEG Blob (Lighter than PNG)
         const blob = await toBlob(element, { 
-            quality: 0.8, // 0.8 is good balance for JPEG
+            quality: 0.85, 
             backgroundColor: '#ffffff',
             contentType: 'image/jpeg',
-            pixelRatio: 2, // Forces manageable resolution on high-end phones
+            pixelRatio: safePixelRatio, 
+            width: width,
+            height: height,
             style: {
                 overflow: 'visible',
                 height: 'auto',
                 maxHeight: 'none',
+                transform: 'scale(1)', 
             },
             filter: (node) => !node.classList?.contains('no-print') 
         });
@@ -73,8 +105,8 @@ export const shareInvoice = async (elementId, fileName) => {
 
         const file = new File([blob], `${fileName}.jpg`, { type: 'image/jpeg' });
 
-        // 2. Use Native Mobile Share
-        if (navigator.share && navigator.canShare({ files: [file] })) {
+        // D. Attempt to Share
+        if (navigator.canShare({ files: [file] })) {
             await navigator.share({
                 files: [file],
                 title: 'Invoice',
@@ -82,10 +114,19 @@ export const shareInvoice = async (elementId, fileName) => {
             });
             toast.dismiss(toastId); // Success
         } else {
-            toast.error("Sharing not supported on this browser", { id: toastId });
+            throw new Error("Device refused to share file");
         }
+
     } catch (error) {
-        console.error(error);
-        toast.error("Share failed (Bill might be too long)", { id: toastId });
+        console.error("Share Error:", error);
+        
+        // Ignore if user simply cancelled the share menu
+        if (error.name === 'AbortError') {
+            toast.dismiss(toastId);
+            return;
+        }
+
+        // Fallback to PDF for real errors (like 'bill too long')
+        await triggerFallback("Image too large");
     }
 };
