@@ -2,8 +2,8 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAppContext } from '../../context/AppContext.jsx';
 import toast from 'react-hot-toast';
-import { SquarePlus, X, Loader2, CircleCheckBig, Search, Settings, Edit2, Trash2, Box, AlertTriangle, ChevronRight, Circle } from 'lucide-react';
-import Header from '../../components/layout/Header.jsx'; // Replaced Navbar with Header
+import { SquarePlus, X, Loader2, CircleCheckBig, Search, Settings, Edit2, Trash2, Box, AlertTriangle, ChevronRight, Circle, Layers } from 'lucide-react';
+import Header from '../../components/layout/Header.jsx'; 
 import BottomNav from '../../components/layout/BottomNav.jsx';
 import Navbar from '../../components/layout/Navbar.jsx';
 
@@ -14,7 +14,7 @@ const SubCategory = () => {
     const [categoryName, setCategoryName] = useState(''); 
     const [subCategories, setSubCategories] = useState([]); 
     const [searchTerm, setSearchTerm] = useState('');
-    const [loading, setLoading] = useState(true); // Default true for initial load
+    const [loading, setLoading] = useState(true); 
     const [isManageMode, setIsManageMode] = useState(false);
     
     // Modals
@@ -33,7 +33,6 @@ const SubCategory = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            // Note: Keep loading true initially
             try {
                 const catRes = await axios.get(`/category/get/${categoryId}`);
                 if (catRes.data.success) setCategoryName(catRes.data.category.name);
@@ -129,6 +128,8 @@ const SubCategory = () => {
                 <SubCategorySkeleton />
             ) : (
                 <div className='grid grid-cols-2 gap-3 px-4 py-2'>
+
+                    {/* --- 1. Regular SubCategories --- */}
                     {filteredSubCategories.map((row) => {
                         const isFilled = filledSubCategoryIds.has(row._id);
                         return (
@@ -141,7 +142,7 @@ const SubCategory = () => {
                                 <div className={`absolute -right-6 -top-6 w-20 h-20 ${primaryAccentBgLight} rounded-full group-hover:scale-150 transition-transform duration-500 ease-out`}></div>
                                 
                                 <div className="relative z-10 flex-1 flex flex-col items-start justify-center">
-                                    <div className={`p-2.5 rounded-full mb-3 shadow-inner ${isFilled ? 'bg-blue-100 text-blue-900' : 'bg-blue-50 text-blue-00'}`}>
+                                    <div className={`p-2.5 rounded-full mb-3 shadow-inner ${isFilled ? 'bg-blue-100 text-blue-900' : 'bg-blue-50 text-blue-600'}`}>
                                         {isFilled ? <CircleCheckBig size={20} /> : <Circle size={20} />}
                                     </div>
                                     <h3 className="font-bold text-gray-800 leading-snug line-clamp-2 text-[14px]">{row.name}</h3>
@@ -176,10 +177,36 @@ const SubCategory = () => {
                         </div>
                         <span className="text-sm font-bold text-gray-500">Add New</span>
                     </button>
+
+                     {/* --- 1. SPECIAL "ALL ITEMS" CARD --- */}
+                    {/* Only show this if NOT in search mode (or keep it always if you prefer) */}
+                    {!searchTerm && !isManageMode && (
+                        <div 
+                            onClick={() => navigate(`/products/all`)} // Navigate to special 'all' route
+                            className="bg-slate-900 p-4 rounded-2xl shadow-lg shadow-slate-900/20 border border-slate-800 transition-all duration-200 flex flex-col justify-between h-36 relative overflow-hidden group active:scale-[0.97] cursor-pointer"
+                        >
+                            {/* Decorative Glow */}
+                            <div className="absolute -right-6 -top-6 w-24 h-24 bg-white/10 rounded-full group-hover:scale-150 transition-transform duration-500 ease-out"></div>
+                            
+                            <div className="relative z-10 flex-1 flex flex-col items-start justify-center">
+                                <div className="p-2.5 rounded-full mb-3 bg-white/10 text-white backdrop-blur-sm border border-white/10">
+                                    <Layers size={20} />
+                                </div>
+                                <h3 className="font-bold text-white leading-snug text-[15px]">All Products</h3>
+                            </div>
+                            
+                            <div className="relative z-10 flex justify-between items-end mt-2 w-full">
+                                <span className="text-[10px] text-slate-300 font-bold uppercase tracking-wider">View All</span>
+                                <div className="bg-white/10 p-1 rounded-full text-white">
+                                    <ChevronRight size={14} strokeWidth={3}/>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             )}
 
-            {/* Create/Edit Modal */}
+            {/* Modals remain unchanged */}
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
                     <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden">
@@ -208,7 +235,6 @@ const SubCategory = () => {
                 </div>
             )}
 
-            {/* Delete Confirmation Modal */}
             {isDeleteModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
                     <div className="bg-white rounded-3xl shadow-2xl w-full max-w-xs p-6 text-center">
