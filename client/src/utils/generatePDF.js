@@ -1,4 +1,4 @@
-import { toPng } from 'html-to-image';
+import { toPng, toBlob } from 'html-to-image'; // Added toBlob
 import jsPDF from 'jspdf';
 import toast from 'react-hot-toast';
 
@@ -45,7 +45,7 @@ export const generatePDF = async (elementId, fileName) => {
     }
 };
 
-// --- NEW: Mobile Share Function ---
+// --- NEW: Mobile Share Function (Optimized for Long Bills) ---
 export const shareInvoice = async (elementId, fileName) => {
     const element = document.getElementById(elementId);
     if (!element) return toast.error("Content not found");
@@ -53,15 +53,25 @@ export const shareInvoice = async (elementId, fileName) => {
     const toastId = toast.loading("Preparing to share...");
 
     try {
-        // 1. Generate Image Blob (Faster & better WhatsApp support than PDF)
-        const dataUrl = await toPng(element, { 
-            quality: 0.95, 
+        // OPTIMIZATION 1: Use toBlob directly (Saves memory compared to toPng string)
+        // OPTIMIZATION 2: Use JPEG (Smaller file size for long lists)
+        // OPTIMIZATION 3: Cap pixelRatio at 2 (Prevents image dimensions from crashing mobile GPU)
+        const blob = await toBlob(element, { 
+            quality: 0.8, // 0.8 is good balance for JPEG
             backgroundColor: '#ffffff',
+            contentType: 'image/jpeg',
+            pixelRatio: 2, // Forces manageable resolution on high-end phones
+            style: {
+                overflow: 'visible',
+                height: 'auto',
+                maxHeight: 'none',
+            },
             filter: (node) => !node.classList?.contains('no-print') 
         });
-        
-        const blob = await (await fetch(dataUrl)).blob();
-        const file = new File([blob], `${fileName}.png`, { type: 'image/png' });
+
+        if (!blob) throw new Error("Image generation failed");
+
+        const file = new File([blob], `${fileName}.jpg`, { type: 'image/jpeg' });
 
         // 2. Use Native Mobile Share
         if (navigator.share && navigator.canShare({ files: [file] })) {
@@ -76,6 +86,6 @@ export const shareInvoice = async (elementId, fileName) => {
         }
     } catch (error) {
         console.error(error);
-        toast.error("Share failed", { id: toastId });
+        toast.error("Share failed (Bill might be too long)", { id: toastId });
     }
 };
