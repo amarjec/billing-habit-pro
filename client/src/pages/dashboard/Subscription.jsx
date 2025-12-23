@@ -67,12 +67,19 @@ const PlanCard = ({ title, price, duration, planId, features, onBuy, loading, ic
 
 const Subscription = () => {
     const { axios, navigate, setUser } = useAppContext();
-    const [loading, setLoading] = useState(false);
+    
+    // FIX: Changed from boolean to string to track WHICH plan is loading
+    const [loadingPlan, setLoadingPlan] = useState(null); 
 
     const handlePurchase = async (planId) => {
-        setLoading(true);
+        setLoadingPlan(planId); // Set loading for this specific plan
         const scriptLoaded = await loadRazorpayScript();
-        if (!scriptLoaded) { toast.error("Failed to load payment gateway"); setLoading(false); return; }
+        
+        if (!scriptLoaded) { 
+            toast.error("Failed to load payment gateway"); 
+            setLoadingPlan(null); 
+            return; 
+        }
 
         try {
             const orderRes = await axios.post('/payment/order', { planId });
@@ -93,21 +100,22 @@ const Subscription = () => {
                         else { toast.error("Verification failed"); }
                     } catch (err) { toast.error("Verification error"); }
                 },
-                theme: { color: "#1e3a8a" }, // Updated to Dark Blue (Blue-900)
-                modal: { ondismiss: () => setLoading(false) }
+                theme: { color: "#1e3a8a" }, 
+                modal: { ondismiss: () => setLoadingPlan(null) } // Stop loading if they close modal
             };
             const rzp = new window.Razorpay(options);
             rzp.open();
-        } catch (err) { toast.error("Purchase failed."); setLoading(false); }
+        } catch (err) { 
+            toast.error("Purchase failed."); 
+            setLoadingPlan(null); 
+        }
     };
 
     return (
         <div className="bg-gray-50 min-h-screen pb-32">
             <Header />
             
-            {/* Header Section with Dark Gradient */}
             <div className="relative bg-linear-to-r from-blue-900 to-indigo-900 px-4 pt-8 pb-16 rounded-b-[3rem] shadow-xl mb-6 text-center overflow-hidden">
-                {/* Decorative Background Element */}
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-white/10 rounded-full blur-3xl -mt-10 pointer-events-none"></div>
                 
                 <div className="relative z-10">
@@ -119,7 +127,6 @@ const Subscription = () => {
                 </div>
             </div>
             
-            {/* Plan Cards Container */}
             <div className="max-w-lg mx-auto px-4 -mt-12 space-y-6">
                 
                 <PlanCard 
@@ -132,7 +139,7 @@ const Subscription = () => {
                     saveText="SAVE ₹1400" 
                     features={['Everything in Monthly', 'Exclusive Gold App Badge', 'Priority Support']} 
                     onBuy={handlePurchase} 
-                    loading={loading} 
+                    loading={loadingPlan === 'yearly'} 
                 />
                 
                 <PlanCard 
@@ -144,10 +151,9 @@ const Subscription = () => {
                     isPopular={false} 
                     features={['Create Unlimited Quotations', 'Unlock Profit Analysis', 'Standard Support']} 
                     onBuy={handlePurchase} 
-                    loading={loading} 
+                    loading={loadingPlan === 'monthly'} 
                 />
                 
-                {/* Trust Indicators */}
                 <div className="flex flex-col items-center gap-2 pt-4">
                     <div className="flex items-center gap-2 text-gray-400 text-xs font-medium">
                         <ShieldCheck size={14} />
