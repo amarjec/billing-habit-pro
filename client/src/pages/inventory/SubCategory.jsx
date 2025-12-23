@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import { useAppContext } from '../../context/AppContext.jsx';
 import toast from 'react-hot-toast';
 import { SquarePlus, X, Loader2, CircleCheckBig, Search, Settings, Edit2, Trash2, Box, AlertTriangle, ChevronRight, Circle, Layers } from 'lucide-react';
-import Header from '../../components/layout/Header.jsx'; 
 import BottomNav from '../../components/layout/BottomNav.jsx';
 import Navbar from '../../components/layout/Navbar.jsx';
 
@@ -167,18 +166,9 @@ const SubCategory = () => {
                         );
                     })}
                     
-                    {/* Add New Button */}
-                    <button 
-                        onClick={() => { setEditingSub(null); setNewSubCategoryName(''); setIsModalOpen(true); }} 
-                        className='bg-white border-2 border-dashed border-gray-300 p-4 rounded-2xl active:scale-[0.97] transition-all flex flex-col justify-center items-center h-36 hover:border-slate-400 hover:shadow-md group'
-                    >
-                        <div className="bg-gray-50 p-3 rounded-full shadow-sm mb-2 group-hover:bg-slate-100 transition-colors">
-                            <SquarePlus size={24} className="text-gray-400 group-hover:text-slate-700" />
-                        </div>
-                        <span className="text-sm font-bold text-gray-500">Add New</span>
-                    </button>
+                   
 
-                     {/* --- 1. SPECIAL "ALL ITEMS" CARD --- */}
+                     {/* --- 2. SPECIAL "ALL ITEMS" CARD --- */}
                     {/* Only show this if NOT in search mode (or keep it always if you prefer) */}
                     {!searchTerm && !isManageMode && (
                         <div 
@@ -203,6 +193,20 @@ const SubCategory = () => {
                             </div>
                         </div>
                     )}
+
+                     {/* Add New Button */}
+                     {!isManageMode && (
+                        <button 
+                        onClick={() => { setEditingSub(null); setNewSubCategoryName(''); setIsModalOpen(true); }} 
+                        className='bg-white border-2 border-dashed border-gray-300 p-4 rounded-2xl active:scale-[0.97] transition-all flex flex-col justify-center items-center h-36 hover:border-slate-400 hover:shadow-md group'
+                    >
+                        <div className="bg-gray-50 p-3 rounded-full shadow-sm mb-2 group-hover:bg-slate-100 transition-colors">
+                            <SquarePlus size={24} className="text-gray-400 group-hover:text-slate-700" />
+                        </div>
+                        <span className="text-sm font-bold text-gray-500">Add New</span>
+                    </button>
+                     )}
+                    
                 </div>
             )}
 

@@ -147,7 +147,7 @@ const Category = ({ searchTerm }) => {
                     )}
                     
                     {/* Add Category Button (Always visible if not loading) */}
-                    {!loading && filtered.length > 0 && (
+                    {!loading && !isManageMode && filtered.length > 0 && (
                         <button onClick={() => handleOpenModal()} className={`bg-white border-2 border-dashed border-gray-300 p-4 rounded-2xl active:scale-[0.97] transition-all h-36 flex flex-col justify-center items-center group hover:border-slate-400 hover:shadow-md`}>
                             <div className="bg-gray-50 p-3 rounded-full shadow-sm mb-2 group-hover:bg-slate-100"><Plus size={24} className="text-gray-400 group-hover:text-slate-700"/></div>
                             <span className="text-sm font-bold text-gray-500">Add Category</span>
