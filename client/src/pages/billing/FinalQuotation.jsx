@@ -212,18 +212,16 @@ const FinalQuotation = () => {
 
          {/* Right Actions */}
          <div className="flex gap-2">
-            {/* <button onClick={() => { setEditingId(null); generatePDF("invoice-content", `Quote_${selectedCustomer.name}`); }} className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-blue-900 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
-                <Download size={14} /> PDF
-            </button> */}
             
             <button onClick={() => setIsProfitModalOpen(true)} className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-slate-900 bg-blue-100 rounded-lg hover:bg-gray-200 transition-colors">
                 <EyeOff size={14} /> Profit
             </button>
-           
-             {/* --- NEW: Share Button --- */}
-            <button onClick={handleShare} className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-green-700 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
-                <Share2 size={14} /> Share
+            <button onClick={() => { setEditingId(null); generatePDF("invoice-content", `Quote_${selectedCustomer.name}`); }} className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-blue-900 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+                <Download size={14} /> Download
             </button>
+            {/* <button onClick={handleShare} className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-green-700 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
+                <Share2 size={14} /> Share
+            </button> */}
          </div>
       </div>
 
