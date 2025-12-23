@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useAppContext } from "../../context/AppContext.jsx"; 
 import toast from "react-hot-toast";
-import { Loader2, EyeOff, Download, Briefcase, Save, FileText } from "lucide-react";
+import { Loader2, EyeOff, Download, Briefcase, Save, FileText, Share2 } from "lucide-react"; // Added Share2
 import ProfitModal from "../../components/modals/ProfitModal.jsx";
 import QuoteItemRow from "../../components/quote/QuoteItemRow.jsx"; 
 import QuoteSummary from "../../components/quote/QuoteSummary.jsx"; 
-import { generatePDF } from "../../utils/generatePDF.js";
+import { generatePDF, shareInvoice } from "../../utils/generatePDF.js";
 import Navbar from "../../components/layout/Navbar.jsx";
 import CustomerInfo from "../../components/common/CustomerInfo.jsx";
 
@@ -139,6 +139,12 @@ const FinalQuotation = () => {
     finally { setIsCreating(false); }
   };
 
+  // --- NEW: Share Handler ---
+  const handleShare = () => {
+    const fileName = selectedCustomer?.name ? `Quote_${selectedCustomer.name}` : 'Quote';
+    shareInvoice('invoice-content', fileName);
+  };
+
   // --- Updated Skeleton Loader ---
   const InvoiceSkeleton = () => (
     <div className="mx-3 my-2 bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 animate-pulse">
@@ -206,11 +212,17 @@ const FinalQuotation = () => {
 
          {/* Right Actions */}
          <div className="flex gap-2">
-            <button onClick={() => setIsProfitModalOpen(true)} className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+            {/* <button onClick={() => { setEditingId(null); generatePDF("invoice-content", `Quote_${selectedCustomer.name}`); }} className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-blue-900 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+                <Download size={14} /> PDF
+            </button> */}
+            
+            <button onClick={() => setIsProfitModalOpen(true)} className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-slate-900 bg-blue-100 rounded-lg hover:bg-gray-200 transition-colors">
                 <EyeOff size={14} /> Profit
             </button>
-            <button onClick={() => { setEditingId(null); generatePDF("invoice-content", `Quote_${selectedCustomer.name}`); }} className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-blue-900 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
-                <Download size={14} /> PDF
+           
+             {/* --- NEW: Share Button --- */}
+            <button onClick={handleShare} className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-green-700 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
+                <Share2 size={14} /> Share
             </button>
          </div>
       </div>

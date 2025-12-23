@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { User, MapPin, Phone, Loader2, EyeOff, Download, Briefcase, ChevronDown, Save, FileText } from 'lucide-react';
+import { Loader2, EyeOff, Download, Briefcase, ChevronDown, Save, FileText, Share2 } from 'lucide-react'; // Added Share2
 import { useAppContext } from '../../context/AppContext.jsx';
 import toast from 'react-hot-toast';
 
 // Layout & Common Components
-import Navbar from '../../components/layout/Navbar.jsx'; // Replaced Header
+import Navbar from '../../components/layout/Navbar.jsx'; 
 import ProfitModal from '../../components/modals/ProfitModal.jsx';
 import CustomerInfo from "../../components/common/CustomerInfo.jsx";
 
@@ -14,7 +14,7 @@ import QuoteItemRow from '../../components/quote/QuoteItemRow.jsx';
 import QuoteSummary from '../../components/quote/QuoteSummary.jsx';
 
 // Utilities & Config
-import { generatePDF } from '../../utils/generatePDF.js'; 
+import { generatePDF, shareInvoice } from '../../utils/generatePDF.js'; 
 import { STATUS_COLORS } from '../../config/constants.js';
 
 const QuoteDetails = () => {
@@ -31,7 +31,7 @@ const QuoteDetails = () => {
     const [extraFare, setExtraFare] = useState('');
     const [discount, setDiscount] = useState('');
     const [status, setStatus] = useState('Pending');
-    const [isWholesale, setIsWholesale] = useState(false); // Added State
+    const [isWholesale, setIsWholesale] = useState(false);
 
     const [editingId, setEditingId] = useState(null);
     const [isProfitModalOpen, setIsProfitModalOpen] = useState(false);
@@ -55,7 +55,7 @@ const QuoteDetails = () => {
                 setExtraFare(savedQuote.extraFare || '');
                 setDiscount(savedQuote.discount || '');
                 setStatus(savedQuote.status || 'Pending');
-                setIsWholesale(savedQuote.quoteType === 'Wholesale'); // Initialize Mode
+                setIsWholesale(savedQuote.quoteType === 'Wholesale'); 
 
                 // Load Master Data
                 const productIds = savedQuote.items.map(i => i.product);
@@ -111,15 +111,12 @@ const QuoteDetails = () => {
     };
 
     // --- 3. Handlers ---
-    
-    // Toggle Wholesale Mode (Updates Prices & State)
     const toggleWholesaleMode = () => {
         const newMode = !isWholesale;
         setIsWholesale(newMode);
         
         setQuoteItems((prev) => {
             const updated = prev.map((item) => {
-                // Switch between Master Wholesale and Master Retail
                 const newPrice = newMode ? item.masterWholesale : item.masterRetail;
                 return { ...item, sellingPrice: newPrice, total: newPrice * item.quantity };
             });
@@ -167,7 +164,7 @@ const QuoteDetails = () => {
                 itemsList,
                 extraFare: parseFloat(extraFare) || 0,
                 discount: parseFloat(discount) || 0,
-                quoteType: isWholesale ? "Wholesale" : "Retail" // Save the mode
+                quoteType: isWholesale ? "Wholesale" : "Retail" 
             });
 
             toast.success("Changes Saved!");
@@ -182,6 +179,12 @@ const QuoteDetails = () => {
     const handleDownload = () => {
         const fileName = quote.customer?.name ? `Quote_${quote.customer.name}` : `Quote_${quote._id.slice(-6)}`;
         generatePDF('invoice-content', fileName);
+    };
+
+    // --- NEW: Mobile Share Handler ---
+    const handleShare = () => {
+        const fileName = quote.customer?.name ? `Bill_${quote.customer.name}` : `Bill_${quote._id.slice(-6)}`;
+        shareInvoice('invoice-content', fileName);
     };
 
     // Skeleton Loader
@@ -220,13 +223,12 @@ const QuoteDetails = () => {
 
     return (
         <div className="min-h-screen flex flex-col bg-gray-100">
-            {/* Replaced Header with Navbar */}
             <Navbar title={`Quote #${quote._id.substring(quote._id.length - 6)}`} />
 
-            {/* 1. Sticky Toolbar (Actions) */}
+            {/* Sticky Toolbar (Actions) */}
             <div className="sticky top-14 z-20 bg-white border-b border-gray-200 px-4 py-2 flex items-center justify-between shadow-sm no-print">
                  
-                 {/* Left: Wholesale Toggle (Replaces Quote ID) */}
+                 {/* Left: Wholesale Toggle */}
                  <label className="inline-flex items-center cursor-pointer group">
                     <input type="checkbox" checked={isWholesale} onChange={toggleWholesaleMode} className="sr-only peer" />
                     <div className={`relative w-9 h-5 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all ${isWholesale ? 'peer-checked:bg-slate-900' : ''}`}></div>
@@ -237,22 +239,25 @@ const QuoteDetails = () => {
 
                  {/* Right Actions */}
                  <div className="flex gap-2">
+                    {/* <button onClick={handleDownload} className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-blue-900 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+                        <Download size={14} /> PDF
+                    </button> */}
                     <button onClick={() => setIsProfitModalOpen(true)} className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
                         <EyeOff size={14} /> Profit
                     </button>
-                    <button onClick={handleDownload} className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-blue-900 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
-                        <Download size={14} /> PDF
+                    <button onClick={handleShare} className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-green-700 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
+                        <Share2 size={14} /> Share
                     </button>
+                    
                  </div>
             </div>
 
-            {/* Main Scrollable Content */}
+            {/* Main Content */}
             <div className="flex-1 pb-24 overflow-y-auto">
                 <div id="invoice-content" className="min-h-[500px] mx-auto max-w-3xl shadow-sm my-2 bg-white rounded-xl overflow-hidden border border-gray-100">
                     
-                    {/* Customer Header Container with Status Overlay */}
+                    {/* Customer Header */}
                     <div className="relative">
-                        {/* Status Dropdown (Top Right Absolute) */}
                         <div className="absolute top-3 right-3 z-20 no-print">
                             <div className={`relative flex items-center px-2 py-1 rounded-lg border shadow-sm transition-all hover:shadow-md bg-white ${currentStatusColor}`}>
                                 <select value={status} onChange={handleStatusChange} className="appearance-none bg-transparent font-bold text-[10px] uppercase tracking-wider pr-4 focus:outline-none cursor-pointer">
@@ -264,12 +269,10 @@ const QuoteDetails = () => {
                             </div>
                         </div>
 
-                        {/* Status Display (Print Only) */}
                         <div className={`hidden print:block absolute top-3 right-3 text-[10px] font-bold border px-2 py-1 rounded uppercase tracking-wider ${currentStatusColor}`}>
                             {status}
                         </div>
 
-                        {/* Reusing CustomerInfo Component */}
                         <CustomerInfo selectedCustomer={quote.customer || {}} />
                     </div>
 
@@ -281,7 +284,7 @@ const QuoteDetails = () => {
                         <div className="col-span-4 text-right pr-1">Amount</div>
                     </div>
 
-                    {/* Items List */}
+                    {/* Items */}
                     <div className="bg-white divide-y divide-gray-50">
                         {quoteItems.length === 0 ? (
                             <div className="py-10 text-center text-gray-400 flex flex-col items-center">
@@ -317,7 +320,7 @@ const QuoteDetails = () => {
                 </div>
             </div>
 
-            {/* Sticky Bottom Save Bar */}
+            {/* Bottom Bar */}
             <div className="fixed bottom-0 left-0 right-0 bg-white shadow-[0_-4px_20px_rgba(0,0,0,0.08)] border-t border-gray-100 z-30 px-5 pb-6 pt-4 rounded-t-3xl safe-area-pb">
                 <div className="max-w-md mx-auto">
                     <button 
