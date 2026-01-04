@@ -56,3 +56,6 @@ dev-dist
 .idea/
 *.swp
 *.swo
+
+# Misc
+/src/pages/other/DesktopLandingPage.jsx
