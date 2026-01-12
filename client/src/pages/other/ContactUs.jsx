@@ -27,7 +27,7 @@ const ContactUs = () => {
                     
                     {/* WhatsApp Card (New) */}
                     <a 
-                        href="https://wa.me/919685208320"
+                        href="https://wa.me/917970088968"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="group flex items-center gap-4 p-5 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-green-200 transition-all active:scale-[0.98]"
@@ -37,7 +37,7 @@ const ContactUs = () => {
                         </div>
                         <div className="flex-1 min-w-0">
                             <h3 className="font-bold text-slate-900 text-sm">Chat on WhatsApp</h3>
-                            <p className="text-xs text-gray-500 mt-0.5">+91 968520 8320</p>
+                            <p className="text-xs text-gray-500 mt-0.5">+91 79700 88968</p>
                         </div>
                         <ChevronRight size={18} className="text-gray-300 group-hover:text-slate-900 transition-colors" />
                     </a>
@@ -59,7 +59,7 @@ const ContactUs = () => {
 
                     {/* Phone Card */}
                     <a 
-                        href="tel:+919685208320"
+                        href="tel:+917970088968"
                         className="group flex items-center gap-4 p-5 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-indigo-200 transition-all active:scale-[0.98]"
                     >
                         <div className="w-12 h-12 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
@@ -67,7 +67,7 @@ const ContactUs = () => {
                         </div>
                         <div className="flex-1 min-w-0">
                             <h3 className="font-bold text-slate-900 text-sm">Call Us</h3>
-                            <p className="text-xs text-gray-500 mt-0.5">+91 968520 8320</p>
+                            <p className="text-xs text-gray-500 mt-0.5">+91 79700 88968</p>
                         </div>
                         <ChevronRight size={18} className="text-gray-300 group-hover:text-slate-900 transition-colors" />
                     </a>
